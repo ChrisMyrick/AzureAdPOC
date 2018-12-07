@@ -14,7 +14,7 @@ namespace SendGridConsole
 {
     class Program
     {
-        private static string apiKey = "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";
+        private static string apiKey = "xxxx";
 
         static async Task<Response> Execute()
         {
