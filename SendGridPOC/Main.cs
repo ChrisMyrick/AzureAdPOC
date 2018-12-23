@@ -6,6 +6,7 @@ using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -26,9 +27,9 @@ namespace SendGridPOC
             _clientApp = new PublicClientApplication(ClientId, authority, TokenCacheHelper.GetUserCache());
         }
 
-        private static string ClientId = "7278f3db-cbed-4d30-96d7-cf93719f10d6";
-        private static string Tenant = "bda218b4-a72c-426c-b46d-583f02a1427e";
-        public static string SecretIdentifier = "https://svmic.vault.azure.net/secrets/SendGrid-API-Key/4b2359314a5042b3a5e3bc86fc111db5";
+        private static string ClientId = ConfigurationManager.AppSettings["ClientId"];
+        private static string Tenant = ConfigurationManager.AppSettings["TenantId"];
+        public static string SecretIdentifier = ConfigurationManager.AppSettings["KeyVaultSecretIdentifier"];
 
         private static PublicClientApplication _clientApp;
 
@@ -44,7 +45,7 @@ namespace SendGridPOC
             var client = new SendGridClient(txtAPIKey.Text.Trim());
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("eric.li@provisionsgroup.com", "Eric Li"),
+                From = new EmailAddress(ConfigurationManager.AppSettings["FromAddress"], ConfigurationManager.AppSettings["FromName"]),
                 Subject = "SendGrid POC: Enjoy Panda",
                 PlainTextContent = "Test message in plain text format.",
                 HtmlContent = "Panda! <h3>Panda!</h3> <h1>Panda!<h1>"
@@ -154,6 +155,25 @@ namespace SendGridPOC
 
             return authResult.AccessToken;
 
+        }
+
+        private async void btnSignOut_Click(object sender, EventArgs e)
+        {
+            var accounts = await Main.PublicClientApp.GetAccountsAsync();
+            if (accounts.Any())
+            {
+                try
+                {
+                    await Main.PublicClientApp.RemoveAsync(accounts.FirstOrDefault());
+                    this.txtBoxStatus.Text = "User Signed Out" + Environment.NewLine + txtBoxStatus.Text;
+
+                    this.btnSignOut.Visible = false;
+                }
+                catch (MsalException ex)
+                {
+                    this.txtBoxStatus.Text = $"Error signing-out user: {ex.Message}" + Environment.NewLine + txtBoxStatus.Text;
+                }
+            }
         }
     }
 }
