@@ -35,6 +35,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.txtToAddress = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.btnSignIn = new System.Windows.Forms.Button();
+            this.btnSignOut = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnSendMail
@@ -98,11 +100,32 @@
             this.label3.TabIndex = 6;
             this.label3.Text = "To Address";
             // 
+            // btnSignIn
+            // 
+            this.btnSignIn.Location = new System.Drawing.Point(480, 52);
+            this.btnSignIn.Name = "btnSignIn";
+            this.btnSignIn.Size = new System.Drawing.Size(148, 23);
+            this.btnSignIn.TabIndex = 7;
+            this.btnSignIn.Text = "Sign In And Get API Key";
+            this.btnSignIn.UseVisualStyleBackColor = true;
+            this.btnSignIn.Click += new System.EventHandler(this.btnSignIn_Click);
+            // 
+            // btnSignOut
+            // 
+            this.btnSignOut.Location = new System.Drawing.Point(634, 52);
+            this.btnSignOut.Name = "btnSignOut";
+            this.btnSignOut.Size = new System.Drawing.Size(75, 23);
+            this.btnSignOut.TabIndex = 8;
+            this.btnSignOut.Text = "Sign Out";
+            this.btnSignOut.UseVisualStyleBackColor = true;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnSignOut);
+            this.Controls.Add(this.btnSignIn);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txtToAddress);
             this.Controls.Add(this.label2);
@@ -126,5 +149,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtToAddress;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btnSignIn;
+        private System.Windows.Forms.Button btnSignOut;
     }
 }

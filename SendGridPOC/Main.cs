@@ -1,4 +1,7 @@
-﻿using SendGrid;
+﻿using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.KeyVault.Models;
+using Microsoft.Identity.Client;
+using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
@@ -19,35 +22,42 @@ namespace SendGridPOC
         public Main()
         {
             InitializeComponent();
+            string authority = $"https://login.microsoftonline.com/{Tenant}";
+            _clientApp = new PublicClientApplication(ClientId, authority, TokenCacheHelper.GetUserCache());
         }
+
+        private static string ClientId = "7278f3db-cbed-4d30-96d7-cf93719f10d6";
+        private static string Tenant = "bda218b4-a72c-426c-b46d-583f02a1427e";
+        public static string SecretIdentifier = "https://svmic.vault.azure.net/secrets/SendGrid-API-Key/4b2359314a5042b3a5e3bc86fc111db5";
+
+        private static PublicClientApplication _clientApp;
+
+        // PublicClientApp should be a singleton.
+        public static PublicClientApplication PublicClientApp { get { return _clientApp; } }
 
 
         private async Task<Response> Send()
         {
             Response response;
             var pandaPath = Environment.CurrentDirectory + @"\Assets\panda.jpg";
-            
-                var client = new SendGridClient(txtAPIKey.Text.Trim());
-                var msg = new SendGridMessage()
-                {
-                    From = new EmailAddress("eric.li@provisionsgroup.com", "Eric Li"),
-                    Subject = "SendGrid POC: Enjoy Panda",
-                    PlainTextContent = "Test message in plain text format.",
-                    HtmlContent = "Panda! <h3>Panda!</h3> <h1>Panda!<h1>"
-                };
 
-                using (var panda1 = new FileStream(pandaPath, FileMode.Open))
-                {
-                    await msg.AddAttachmentAsync("panda1.jpg", panda1, "image/jpeg", "attachment", "panda1");
-                }
+            var client = new SendGridClient(txtAPIKey.Text.Trim());
+            var msg = new SendGridMessage()
+            {
+                From = new EmailAddress("eric.li@provisionsgroup.com", "Eric Li"),
+                Subject = "SendGrid POC: Enjoy Panda",
+                PlainTextContent = "Test message in plain text format.",
+                HtmlContent = "Panda! <h3>Panda!</h3> <h1>Panda!<h1>"
+            };
 
-                //using (var panda2 = new FileStream(pandaPath, FileMode.Open))
-                //{
-                //    await msg.AddAttachmentAsync("panda2.jpg", panda2, "image/jpeg", "inline", "panda2");
-                //}
-           
-                msg.AddTo(new EmailAddress(txtToAddress.Text.Trim(), "Eric Li"));
-                response = await client.SendEmailAsync(msg);
+            using (var panda1 = new FileStream(pandaPath, FileMode.Open))
+            {
+                await msg.AddAttachmentAsync("panda1.jpg", panda1, "image/jpeg", "attachment", "panda1");
+            }
+
+
+            msg.AddTo(new EmailAddress(txtToAddress.Text.Trim(), "Test Account"));
+            response = await client.SendEmailAsync(msg);
 
 
             return response;
@@ -55,7 +65,7 @@ namespace SendGridPOC
 
         private void SetStatus(string status)
         {
-            txtBoxStatus.Text += status + Environment.NewLine;
+            txtBoxStatus.Text = status + Environment.NewLine + txtBoxStatus.Text;
         }
 
         private async void btnSendMail_Click(object sender, EventArgs e)
@@ -78,6 +88,72 @@ namespace SendGridPOC
             stopWatch.Stop();
             SetStatus($"Status: {response.StatusCode.ToString()}");
             SetStatus($"Done. Time taken in ms: {stopWatch.ElapsedMilliseconds}");
+        }
+
+        private async void btnSignIn_Click(object sender, EventArgs e)
+        {
+            SecretBundle sec = null;
+            var kv = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(GetToken));
+
+            sec = await kv.GetSecretAsync("https://svmic.vault.azure.net/secrets/SendGrid-API-Key/4b2359314a5042b3a5e3bc86fc111db5");
+
+            this.Invoke(new System.Action(() =>
+                {
+                    btnSignOut.Visible = true;
+                    txtBoxStatus.Text = "API Key: " + sec.Value + Environment.NewLine + txtBoxStatus.Text;
+                    txtAPIKey.Text = sec.Value;
+                }
+            ));
+
+        }
+
+        private async Task<string> GetToken(string authority, string resource, string scope)
+        {
+            string[] keyVaultScopes = new string[] { $"{resource}/.default" };
+            AuthenticationResult authResult = null;
+
+            var app = Main.PublicClientApp;
+            var accounts = await app.GetAccountsAsync();
+
+            try
+            {
+                authResult = await app.AcquireTokenSilentAsync(keyVaultScopes, accounts.FirstOrDefault());
+                this.Invoke(new System.Action(() =>
+                    {
+                        txtBoxStatus.Text = "AccessToken: " + Environment.NewLine + authResult.AccessToken;
+                    }
+                ));
+            }
+            catch (MsalUiRequiredException ex)
+            {
+                // A MsalUiRequiredException happened on AcquireTokenSilentAsync. 
+                // This indicates you need to call AcquireTokenAsync to acquire a token
+                //System.Diagnostics.Debug.WriteLine($"MsalUiRequiredException: {ex.Message}");
+
+                try
+                {
+                    authResult = await app.AcquireTokenAsync(keyVaultScopes);
+                    this.Invoke(new System.Action(() =>
+                        {
+                            txtBoxStatus.Text = "AccessToken: " + Environment.NewLine + authResult.AccessToken;
+                        }
+                    ));
+
+                }
+                catch (MsalException msalex)
+                {
+                    
+                    this.Invoke(new System.Action(() =>
+                    {
+                        txtBoxStatus.Text = $"Error Acquiring Token:{System.Environment.NewLine}{msalex}";
+                    }
+                    ));
+                }
+            }
+
+
+            return authResult.AccessToken;
+
         }
     }
 }
