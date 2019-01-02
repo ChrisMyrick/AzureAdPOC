@@ -74,7 +74,7 @@ namespace SendGridPOC
 
             if (string.IsNullOrEmpty(txtAPIKey.Text))
             {
-                MessageBox.Show("Please enter an API key. \r\n You know where to find it.");
+                MessageBox.Show("API Key for SendGrid is required.");
                 return;
 
             }
