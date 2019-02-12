@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SendGridPOC", "SendGridPOC\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SendGridConsole", "SendGridConsole\SendGridConsole.csproj", "{99777CBF-864A-4D41-AD2E-3BB6A3CEEA01}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RolesAndClaims", "RolesAndClaims\RolesAndClaims.csproj", "{18BEFDEE-312C-4A75-96C7-C7AB246E8B93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthPOC", "AuthPOC\AuthPOC.csproj", "{CA325E8D-4660-416F-B939-0424AE571B5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{99777CBF-864A-4D41-AD2E-3BB6A3CEEA01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99777CBF-864A-4D41-AD2E-3BB6A3CEEA01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99777CBF-864A-4D41-AD2E-3BB6A3CEEA01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18BEFDEE-312C-4A75-96C7-C7AB246E8B93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18BEFDEE-312C-4A75-96C7-C7AB246E8B93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18BEFDEE-312C-4A75-96C7-C7AB246E8B93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18BEFDEE-312C-4A75-96C7-C7AB246E8B93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA325E8D-4660-416F-B939-0424AE571B5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA325E8D-4660-416F-B939-0424AE571B5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA325E8D-4660-416F-B939-0424AE571B5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA325E8D-4660-416F-B939-0424AE571B5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
