@@ -85,7 +85,7 @@
             // chklstADGroup
             // 
             this.chklstADGroup.FormattingEnabled = true;
-            this.chklstADGroup.Location = new System.Drawing.Point(276, 76);
+            this.chklstADGroup.Location = new System.Drawing.Point(276, 64);
             this.chklstADGroup.Margin = new System.Windows.Forms.Padding(4);
             this.chklstADGroup.Name = "chklstADGroup";
             this.chklstADGroup.Size = new System.Drawing.Size(169, 276);
@@ -143,7 +143,7 @@
             // 
             // txtHiddentAttrib
             // 
-            this.txtHiddentAttrib.Location = new System.Drawing.Point(13, 556);
+            this.txtHiddentAttrib.Location = new System.Drawing.Point(13, 545);
             this.txtHiddentAttrib.Margin = new System.Windows.Forms.Padding(4);
             this.txtHiddentAttrib.Multiline = true;
             this.txtHiddentAttrib.Name = "txtHiddentAttrib";
